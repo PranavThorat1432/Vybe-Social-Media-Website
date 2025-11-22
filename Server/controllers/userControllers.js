@@ -4,7 +4,15 @@ import User from "../models/UserModel.js";
 export const getCurrentUser = async (req, res) => {
     try {
         const userId = req.userId;
-        const user = await User.findById(userId).populate('posts loops posts.author posts.comments');
+        const user = await User.findById(userId)
+        .populate('posts loops posts.author posts.comments')
+        .populate({
+            path: 'story',
+            populate: [
+                { path: 'author', select: 'name userName profileImage' },
+                { path: 'viewers', select: 'name userName profileImage' }
+            ]
+        });
         if(!user) {
             return res.status(404).json({
                 message: 'User not found!'
