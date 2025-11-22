@@ -65,7 +65,7 @@ const userSchema = new mongoose.Schema({
     ],
     story: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "story"
+        ref: "Story"
     },
     resetOtp: {
         type: String,
