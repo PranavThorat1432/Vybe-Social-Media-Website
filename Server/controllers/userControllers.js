@@ -1,4 +1,5 @@
 import uploadOnCloudinary from "../config/cloudinary.js";
+import Notification from "../models/NotificationModel.js";
 import User from "../models/UserModel.js";
 
 export const getCurrentUser = async (req, res) => {
@@ -159,6 +160,23 @@ export const follow = async (req, res) => {
             currentUser.following.push(targetUserId);
             targetUser.followers.push(currentUserId);
 
+            if(currentUser._id != targetUser._id) {
+                const notification = await Notification.create({
+                    sender: currentUser._id,
+                    receiver: targetUser._id,
+                    type: 'follow',
+                    message: 'started following you'
+                });
+                
+                const populatedNotification = await Notification.findById(notification._id).populate('sender receiver');
+
+                const receiverSocketId = getSocketId(targetUser._id);
+                if(receiverSocketId) {
+                    io.to(receiverSocketId).emit('newNotification', populatedNotification);
+                }
+
+            }
+
             await currentUser.save();
             await targetUser.save();
 
@@ -172,6 +190,95 @@ export const follow = async (req, res) => {
     } catch (error) {
         return res.status(500).json({
             message: `Follow Error: ${error}`
+        });
+    }
+};
+
+
+export const followingList = async (req, res) => {
+    try {
+        const result = await User.findById(req.userId);
+        return res.status(200).json(result?.following);
+
+    } catch (error) {
+        return res.status(500).json({
+            message: `FollowingList Error: ${error}`
+        });
+    }
+};
+
+
+export const search = async (req, res) => {
+    try {
+        const keyWord = req.query.keyWord;
+
+        if(!keyWord) {
+            return res.status(404).json({
+                message: 'Keyword is required!'
+            });
+        }
+
+        const users = await User.find({
+            $or: [
+                {userName: { $regex: keyWord, $options: 'i' }},
+                {name: { $regex: keyWord, $options: 'i' }},
+            ]
+        }).select('-password');
+
+        return res.status(200).json(users);
+
+    } catch (error) {
+        return res.status(500).json({
+            message: `Search Error: ${error}`
+        });
+    }
+};
+
+
+export const getAllNotifications = async (req, res) => {
+    try {
+        const notifications = await Notification.find({
+            receiver: req.userId
+        }).populate([
+            { path: 'sender', select: 'userName profileImage' },
+            { path: 'receiver', select: 'userName' },
+            { 
+                path: 'post',
+                select: 'media mediaType',
+                populate: {
+                    path: 'author',
+                    select: 'userName profileImage'
+                }
+            },
+            { path: 'loop', select: 'name' }
+        ]).sort({ createdAt: -1 });
+
+        return res.status(200).json(notifications);
+
+    } catch (error) {
+        console.error('Error in getAllNotifications:', error);
+        return res.status(500).json({
+            message: `Get-All-Notifications Error: ${error.message}`
+        });
+    }
+};
+
+
+export const markAsRead = async (req, res) => {
+    try {
+        const notificationId = req.params.notificationId;
+        const notification = await Notification.findById(notificationId).populate('sender receiver post loop');
+        notification.isRead = true;
+        notification.save();
+
+
+        return res.status(200).json({
+            message: 'Marked As Read'
+        });
+
+    } catch (error) {
+        return res.status(500).json({
+            message: `Notification Read Error: ${error}`
         });
     }
 };
