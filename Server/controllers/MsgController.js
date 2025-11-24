@@ -1,6 +1,7 @@
 import uploadOnCloudinary from "../config/cloudinary.js";
 import Conversation from "../models/ConversationModel.js";
 import Message from "../models/MsgModel.js";
+import {getSocketId, io} from '../socket.js'
 
 
 export const sendMsg = async (req,res) => {
@@ -33,6 +34,11 @@ export const sendMsg = async (req,res) => {
         } else {
             conversation.messages.push(newMessage._id);
             await conversation.save();
+        }
+
+        const receiverSocketId = getSocketId(receiverId);
+        if(receiverSocketId) {
+            io.to(receiverSocketId).emit('newMessage', newMessage);
         }
 
         return res.status(200).json(newMessage);
@@ -69,13 +75,13 @@ export const getPrevUserChats = async (req, res) => {
         const currentUserId = req.userId;
         const conversations = await Conversation.find({
             participants: currentUserId
-        }).populate(participants).sort({updatedAt: -1});
+        }).populate('participants').sort({updatedAt: -1});
 
         const userMap = {}
         conversations.forEach(conv => {
             conv.participants.forEach(user => {
                 if(user._id != currentUserId) {
-                    userMap(user._id) = user
+                    userMap[user._id] = user
                 }
             });
         });
