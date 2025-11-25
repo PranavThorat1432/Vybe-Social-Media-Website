@@ -13,7 +13,7 @@ userRouter.get('/follow/:targetUserId',isAuth, follow);
 userRouter.get('/followingList',isAuth, followingList);
 userRouter.get('/search',isAuth, search);
 userRouter.get('/getAllNotifications',isAuth, getAllNotifications);
-userRouter.get('/markAsRead/:notificationId',isAuth, markAsRead);
+userRouter.post('/markAsRead',isAuth, markAsRead);
 
 
 export default userRouter;
