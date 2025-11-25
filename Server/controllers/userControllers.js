@@ -1,6 +1,7 @@
 import uploadOnCloudinary from "../config/cloudinary.js";
 import Notification from "../models/NotificationModel.js";
 import User from "../models/UserModel.js";
+import { getSocketId, io } from "../socket.js";
 
 export const getCurrentUser = async (req, res) => {
     try {
@@ -250,7 +251,7 @@ export const getAllNotifications = async (req, res) => {
                     select: 'userName profileImage'
                 }
             },
-            { path: 'loop', select: 'name' }
+            { path: 'loop', select: 'media caption' }
         ]).sort({ createdAt: -1 });
 
         return res.status(200).json(notifications);
@@ -266,11 +267,21 @@ export const getAllNotifications = async (req, res) => {
 
 export const markAsRead = async (req, res) => {
     try {
-        const notificationId = req.params.notificationId;
-        const notification = await Notification.findById(notificationId).populate('sender receiver post loop');
-        notification.isRead = true;
-        notification.save();
+        const {notificationId} = req.body;
 
+        if(Array.isArray(notificationId)) {
+            // bulk mark as read
+            await Notification.updateMany(
+                { _id: { $in: notificationId }, receiver: req.userId },
+                { $set: { isRead: true }}
+            );
+        } else {
+            // mark single notification as read
+            await Notification.findOneAndUpdate(
+                { _id: notificationId, receiver: req.userId },
+                { $set: { isRead: true }}
+            );
+        }
 
         return res.status(200).json({
             message: 'Marked As Read'
