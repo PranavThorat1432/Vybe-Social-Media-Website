@@ -3,7 +3,7 @@ import Loop from "../models/LoopModel.js";
 import Notification from "../models/NotificationModel.js";
 import Post from "../models/PostModel.js";
 import User from "../models/UserModel.js";
-import { io } from "../socket.js";
+import { getSocketId, io } from "../socket.js";
 
 export const uploadLoop = async (req, res) => {
     try {
@@ -62,7 +62,7 @@ export const like = async (req, res) => {
                     receiver: loop.author._id,
                     type: 'like',
                     loop: loop._id,
-                    message: 'liked your lost'
+                    message: 'liked your loop'
                 });
                 
                 const populatedNotification = await Notification.findById(notification._id).populate('sender receiver loop');
@@ -116,7 +116,7 @@ export const comment = async (req, res) => {
                 receiver: loop.author._id,
                 type: 'comment',
                 loop: loop._id,
-                message: 'commented on your lost'
+                message: 'commented on your loop'
             });
             
             const populatedNotification = await Notification.findById(notification._id).populate('sender receiver loop');
