@@ -18,7 +18,7 @@ const MessageArea = () => {
 
     const {selectedUser, messages} = useSelector((state) => state.message);
     const {userData} = useSelector((state) => state.user);
-    const {socket} = useSelector((state) => state.socket);
+    const {socket, onlineUsers = []} = useSelector((state) => state.socket);
     const navigate = useNavigate();
     const imageInput = useRef();
     const dispatch = useDispatch();
@@ -157,13 +157,21 @@ const MessageArea = () => {
                   className='w-full h-full object-cover'
                 />
               </div>
-              <div className='absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-green-500 rounded-full border-2 border-gray-900 ring-1 ring-green-400/50 animate-pulse'></div>
+              {onlineUsers.includes(selectedUser._id) && (
+                <div className='absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-green-500 rounded-full border-2 border-gray-900 ring-1 ring-green-400/50 animate-pulse'></div>
+              )}
             </div>
             <div>
               <h2 className='text-white font-medium group-hover:text-blue-400 transition-colors'>{selectedUser.userName}</h2>
               <div className='flex items-center gap-1'>
-                <span className='w-2 h-2 rounded-full bg-green-500 animate-pulse'></span>
-                <p className='text-xs text-gray-400'>Active now</p>
+                {onlineUsers.includes(selectedUser._id) ? (
+                  <>
+                    <span className='w-2 h-2 rounded-full bg-green-500 animate-pulse'></span>
+                    <p className='text-xs text-green-400'>Active now</p>
+                  </>
+                ) : (
+                  <p className='text-xs text-gray-400'>Offline</p>
+                )}
               </div>
             </div>
           </div>
