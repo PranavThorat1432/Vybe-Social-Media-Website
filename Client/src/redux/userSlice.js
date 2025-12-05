@@ -38,8 +38,22 @@ const userSlice = createSlice({
         setNotificationData: (state, action) => {
             state.notificationData = action.payload;
         },
+        removeNotification: (state, action) => {
+            state.notificationData = state.notificationData.filter(
+                notification => notification._id !== action.payload
+            );
+        },
     }
 });
 
-export const { setUserData, setSuggestedUsers, setProfileData, setFollowing, toggleFollow, setSearchData, setNotificationData } = userSlice.actions;
+export const { 
+    setUserData, 
+    setSuggestedUsers, 
+    setProfileData, 
+    setFollowing, 
+    toggleFollow, 
+    setSearchData, 
+    setNotificationData, 
+    removeNotification 
+} = userSlice.actions;
 export default userSlice.reducer;
