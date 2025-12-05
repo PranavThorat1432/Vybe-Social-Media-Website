@@ -1,12 +1,45 @@
 import React, { useState } from 'react';
 import profilePic from '../assets/profilePic.png';
 import { useNavigate } from 'react-router-dom';
-import { FiUser, FiHeart, FiMessageSquare, FiUserPlus, FiClock } from 'react-icons/fi';
+import { FiUser, FiHeart, FiMessageSquare, FiUserPlus, FiClock, FiTrash2, FiX, FiMoreVertical } from 'react-icons/fi';
 import { formatDistanceToNow } from 'date-fns';
+import axios from 'axios';
+import { serverUrl } from '../App';
+import { useDispatch } from 'react-redux';
+import { removeNotification } from '../redux/userSlice';
 
-const NotificationCard = ({ noti, onMarkAsRead }) => {
+const NotificationCard = ({ noti, onMarkAsRead, onDelete }) => {
     const navigate = useNavigate();
+    const dispatch = useDispatch();
     const [isHovered, setIsHovered] = useState(false);
+    const [isMenuOpen, setIsMenuOpen] = useState(false);
+    const [isDeleting, setIsDeleting] = useState(false);
+    const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+
+    const handleDelete = async (e) => {
+        e.stopPropagation();
+        if (isDeleting) return;
+        
+        try {
+            setIsDeleting(true);
+            await axios.delete(`${serverUrl}/api/user/notifications/${noti._id}`, {
+                withCredentials: true
+            });
+            
+            // Dispatch action to remove notification from Redux store
+            dispatch(removeNotification(noti._id));
+            
+            // If there's a parent component handling deletion
+            if (onDelete) {
+                onDelete(noti._id);
+            }
+        } catch (error) {
+            console.error('Failed to delete notification:', error);
+        } finally {
+            setIsDeleting(false);
+            setShowDeleteConfirm(false);
+        }
+    };
 
     // Get appropriate icon based on notification type
     const getNotificationIcon = () => {
@@ -52,7 +85,12 @@ const NotificationCard = ({ noti, onMarkAsRead }) => {
             }`}
             onClick={handleClick}
             onMouseEnter={() => setIsHovered(true)}
-            onMouseLeave={() => setIsHovered(false)}
+            onMouseLeave={() => {
+                setIsHovered(false);
+                if (!showDeleteConfirm) {
+                    setIsMenuOpen(false);
+                }
+            }}
         >
             <div className='flex items-start gap-3'>
                 {/* Notification Icon */}
@@ -116,22 +154,78 @@ const NotificationCard = ({ noti, onMarkAsRead }) => {
                 )}
             </div>
 
-            {/* Hover actions */}
-            {isHovered && !noti.isRead && (
-                <div className='absolute right-3 top-1/2 transform -translate-y-1/2'>
-                    <button 
-                        className='p-1.5 rounded-full bg-gray-700 hover:bg-gray-600 transition-colors'
-                        onClick={(e) => {
-                            e.stopPropagation();
-                            onMarkAsRead?.();
-                        }}
-                    >
-                        <svg className='w-4 h-4 text-gray-300' fill='none' stroke='currentColor' viewBox='0 0 24 24'>
-                            <path strokeLinecap='round' strokeLinejoin='round' strokeWidth={2} d='M5 13l4 4L19 7' />
-                        </svg>
-                    </button>
-                </div>
-            )}
+            {/* Three-dot menu - Positioned in top-right corner */}
+            <div className={`absolute right-3 top-3 transition-opacity duration-200 ${isHovered || isMenuOpen ? 'opacity-100' : 'opacity-0'}`}>
+                {!showDeleteConfirm ? (
+                    <div className='relative'>
+                        <button 
+                            className={`p-1.5 rounded-full transition-colors ${isMenuOpen ? 'bg-gray-700' : 'bg-transparent hover:bg-gray-700'}`}
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                setIsMenuOpen(!isMenuOpen);
+                            }}
+                            title='More options'
+                        >
+                            <FiMoreVertical className='w-4 h-4 text-gray-400' />
+                        </button>
+                        
+                        {/* Dropdown menu */}
+                        {isMenuOpen && (
+                            <div 
+                                className='absolute right-0 mt-1 w-40 bg-gray-800 rounded-lg shadow-lg border border-gray-700 z-10 py-1'
+                                onClick={(e) => e.stopPropagation()}
+                                style={{ top: '100%' }}
+                            >
+                                {!noti.isRead && (
+                                    <button
+                                        className='w-full text-left px-4 py-2 text-sm text-gray-200 hover:bg-gray-700 flex items-center gap-2'
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            onMarkAsRead?.();
+                                            setIsMenuOpen(false);
+                                        }}
+                                    >
+                                        <svg className='w-4 h-4' fill='none' stroke='currentColor' viewBox='0 0 24 24'>
+                                            <path strokeLinecap='round' strokeLinejoin='round' strokeWidth={2} d='M5 13l4 4L19 7' />
+                                        </svg>
+                                        Mark as read
+                                    </button>
+                                )}
+                                <button
+                                    className='w-full text-left px-4 py-2 text-sm text-red-400 hover:bg-gray-700 flex items-center gap-2'
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        setShowDeleteConfirm(true);
+                                        setIsMenuOpen(false);
+                                    }}
+                                >
+                                    <FiTrash2 className='w-4 h-4' />
+                                    Delete
+                                </button>
+                            </div>
+                        )}
+                    </div>
+                ) : (
+                    <div className='flex items-center gap-1 bg-gray-800 rounded-lg p-1 border border-gray-700 shadow-lg' onClick={(e) => e.stopPropagation()}>
+                        <button 
+                            className='p-1 text-xs text-red-400 hover:bg-red-900/50 rounded px-2 py-1 transition-colors'
+                            onClick={handleDelete}
+                            disabled={isDeleting}
+                        >
+                            {isDeleting ? 'Deleting...' : 'Delete'}
+                        </button>
+                        <button 
+                            className='p-1 text-xs text-gray-300 hover:bg-gray-700/50 rounded-full transition-colors'
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                setShowDeleteConfirm(false);
+                            }}
+                        >
+                            <FiX className='w-3.5 h-3.5' />
+                        </button>
+                    </div>
+                )}
+            </div>
         </div>
     );
 };
