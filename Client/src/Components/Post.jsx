@@ -16,7 +16,7 @@ import { IoSendSharp } from 'react-icons/io5';
 import { BsThreeDots, BsEmojiSmile } from 'react-icons/bs';
 import axios from 'axios';
 import { serverUrl } from '../App';
-import { setPostData } from '../redux/postSlice';
+import { removePost, setPostData } from '../redux/postSlice';
 import { setUserData } from '../redux/userSlice';
 import FollowButton from './FollowButton';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -35,6 +35,7 @@ const Post = ({ post }) => {
     const [isLiked, setIsLiked] = useState(post?.likes?.includes(userData?._id));
     const [likeCount, setLikeCount] = useState(post?.likes?.length || 0);
     const [showOptions, setShowOptions] = useState(false);
+    const [isDeleting, setIsDeleting] = useState(false);
     const [isBookmarked, setIsBookmarked] = useState(userData?.saved?.includes(post?._id));
     const [doubleClickLike, setDoubleClickLike] = useState(false);
     
@@ -173,6 +174,33 @@ const Post = ({ post }) => {
         }
     };
 
+    const handleDeletePost = async () => {
+        if (isDeleting || post?.author?._id !== userData?._id) return;
+        
+        const confirmDelete = window.confirm('Are you sure you want to delete this post? This action cannot be undone.');
+        if (!confirmDelete) return;
+        
+        setIsDeleting(true);
+        try {
+            const response = await axios.delete(`${serverUrl}/api/post/delete/${post._id}`, {
+                withCredentials: true
+            });
+            
+            // Remove the post from the Redux store
+            dispatch(removePost(post._id));
+            
+            // Show success message
+            alert('Post deleted successfully');
+            
+        } catch (error) {
+            console.error('Error deleting post:', error);
+            alert('Failed to delete post. Please try again.');
+        } finally {
+            setIsDeleting(false);
+            setShowOptions(false);
+        }
+    };
+
     useEffect(() => {
         const handleLikedPost = (updatedData) => {
             const updatedPosts = postData.map(p => 
@@ -192,12 +220,18 @@ const Post = ({ post }) => {
             dispatch(setPostData(updatedPosts));
         };
 
+        const handlePostDeleted = ({ postId }) => {
+            dispatch(removePost(postId));
+        };
+
         socket?.on('likedPost', handleLikedPost);
         socket?.on('commentedPost', handleCommentedPost);
+        socket?.on('postDeleted', handlePostDeleted);
 
         return () => {
             socket?.off('likedPost', handleLikedPost);
             socket?.off('commentedPost', handleCommentedPost);
+            socket?.off('postDeleted', handlePostDeleted);
         };
     }, [socket, postData, dispatch]);
 
@@ -251,8 +285,20 @@ const Post = ({ post }) => {
                     <div className='absolute right-0 mt-1 w-48 bg-white dark:bg-gray-800 rounded-md shadow-lg py-1 z-10 border border-gray-200 dark:border-gray-700'>
                         {userData?._id === post?.author?._id ? (
                             <>
-                                <button className='w-full text-left px-4 py-2 text-sm text-red-500 hover:bg-gray-100 dark:hover:bg-gray-700'>
-                                    Delete Post
+                                <button 
+                                    onClick={handleDeletePost}
+                                    disabled={isDeleting}
+                                    className={`w-full text-left px-4 py-2 text-sm ${isDeleting ? 'text-gray-500' : 'text-red-500 hover:bg-gray-100 dark:hover:bg-gray-700'} flex items-center gap-2`}
+                                >
+                                    {isDeleting ? (
+                                        <span className='flex items-center gap-2'>
+                                            <svg className='animate-spin h-4 w-4' xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24'>
+                                                <circle className='opacity-25' cx='12' cy='12' r='10' stroke='currentColor' strokeWidth='4'></circle>
+                                                <path className='opacity-75' fill='currentColor' d='M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z'></path>
+                                            </svg>
+                                            Deleting...
+                                        </span>
+                                    ) : 'Delete Post'}
                                 </button>
                                 <button className='w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700'>
                                     Edit Post
