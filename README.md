@@ -18,7 +18,7 @@
 <br/><br/>
 
 Vybe is a next-generation social media platform engineered for **real-time interaction**,
-**storytelling**, and **community-driven content**, built using the latest MERN technologies.
+**storytelling**, and **community-driven content**, built using the latest MERN technologies. 
 
 </div>
 
