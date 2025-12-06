@@ -1,6 +1,6 @@
 import express from 'express';
 import isAuth from '../middlewares/isAuth.js';
-import { editProfile, follow, followingList, getAllNotifications, getCurrentUser, getProfile, markAsRead, search, suggestedUsers } from '../controllers/userControllers.js';
+import { deleteNotification, editProfile, follow, followingList, getAllNotifications, getCurrentUser, getProfile, markAsRead, search, suggestedUsers } from '../controllers/userControllers.js';
 import { upload } from '../middlewares/multer.js';
 
 const userRouter = express.Router();
@@ -14,6 +14,6 @@ userRouter.get('/followingList',isAuth, followingList);
 userRouter.get('/search',isAuth, search);
 userRouter.get('/getAllNotifications',isAuth, getAllNotifications);
 userRouter.post('/markAsRead',isAuth, markAsRead);
-
+userRouter.delete('/notifications/:notificationId', isAuth, deleteNotification);
 
 export default userRouter;

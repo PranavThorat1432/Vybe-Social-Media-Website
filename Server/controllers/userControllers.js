@@ -268,28 +268,70 @@ export const getAllNotifications = async (req, res) => {
 export const markAsRead = async (req, res) => {
     try {
         const {notificationId} = req.body;
+        const userId = req.userId;
 
         if(Array.isArray(notificationId)) {
-            // bulk mark as read
+            // Update multiple notifications
             await Notification.updateMany(
-                { _id: { $in: notificationId }, receiver: req.userId },
-                { $set: { isRead: true }}
+                { _id: { $in: notificationId }, receiver: userId },
+                { $set: { isRead: true } }
             );
         } else {
-            // mark single notification as read
-            await Notification.findOneAndUpdate(
-                { _id: notificationId, receiver: req.userId },
-                { $set: { isRead: true }}
+            // Update single notification
+            await Notification.findByIdAndUpdate(
+                {_id: notificationId, receiver: userId},
+                {isRead: true}
             );
         }
 
+        // Emit real-time update
+        const socketId = getSocketId(userId);
+        if(socketId) {
+            io.to(socketId).emit('notificationRead', { notificationId });
+        }
+
         return res.status(200).json({
-            message: 'Marked As Read'
+            message: 'Notification marked as read'
         });
 
     } catch (error) {
         return res.status(500).json({
-            message: `Notification Read Error: ${error}`
+            message: `Mark-As-Read Error: ${error}`
+        });
+    }
+};
+
+export const deleteNotification = async (req, res) => {
+    try {
+        const { notificationId } = req.params;
+        const userId = req.userId;
+
+        // Delete the notification if it belongs to the user
+        const deletedNotification = await Notification.findOneAndDelete({
+            _id: notificationId,
+            receiver: userId
+        });
+
+        if (!deletedNotification) {
+            return res.status(404).json({
+                message: 'Notification not found or not authorized'
+            });
+        }
+
+        // Emit real-time update
+        const socketId = getSocketId(userId);
+        if (socketId) {
+            io.to(socketId).emit('notificationDeleted', { notificationId });
+        }
+
+        return res.status(200).json({
+            message: 'Notification deleted successfully',
+            notificationId
+        });
+
+    } catch (error) {
+        return res.status(500).json({
+            message: `Delete Notification Error: ${error}`
         });
     }
 };

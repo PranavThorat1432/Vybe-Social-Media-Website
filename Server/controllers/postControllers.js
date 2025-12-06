@@ -205,3 +205,56 @@ export const saved = async (req, res) => {
         });
     }
 };
+
+export const deletePost = async (req, res) => {
+    try {
+        const { postId } = req.params;
+        const userId = req.userId;
+
+        // Find the post
+        const post = await Post.findById(postId);
+        if (!post) {
+            return res.status(404).json({
+                message: 'Post not found!'
+            });
+        }
+
+        // Check if the user is the author of the post
+        if (post.author.toString() !== userId) {
+            return res.status(403).json({
+                message: 'Unauthorized: You can only delete your own posts'
+            });
+        }
+
+        // Delete the post
+        await Post.findByIdAndDelete(postId);
+
+        // Remove the post from the user's posts array
+        await User.findByIdAndUpdate(userId, {
+            $pull: { posts: postId }
+        });
+
+        // Remove from saved posts of all users who saved it
+        await User.updateMany(
+            { saved: postId },
+            { $pull: { saved: postId } }
+        );
+
+        // Delete all notifications related to this post
+        await Notification.deleteMany({ post: postId });
+
+        // Emit socket event for real-time updates
+        io.emit('postDeleted', { postId });
+
+        return res.status(200).json({
+            message: 'Post deleted successfully',
+            postId
+        });
+
+    } catch (error) {
+        console.error('Delete Post Error:', error);
+        return res.status(500).json({
+            message: `Delete Post Error: ${error.message}`
+        });
+    }
+};
