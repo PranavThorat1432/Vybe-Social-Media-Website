@@ -51,7 +51,7 @@ const LeftHome = () => {
             </div>
             <div className='relative'>
                 <button 
-                    className='p-2 rounded-full hover:bg-gray-800 transition-colors duration-200 relative'
+                    className='p-2 rounded-full hover:bg-gray-800 transition-colors duration-200 relative cursor-pointer'
                     onClick={() => setShowNotification(prev => !prev)}
                 >
                     <FaRegHeart className='text-gray-300 w-5 h-5 hover:text-white transition-colors'/>

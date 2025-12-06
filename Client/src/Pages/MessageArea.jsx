@@ -142,7 +142,7 @@ const MessageArea = () => {
             onClick={() => navigate('/')}
             className='p-2 rounded-full hover:bg-gray-800/80 transition-all duration-200 active:scale-95'
           >
-            <MdOutlineKeyboardBackspace className='text-gray-300 w-6 h-6' />
+            <MdOutlineKeyboardBackspace className='text-gray-300 w-6 h-6 cursor-pointer' />
           </button>
           
           <div 
@@ -289,7 +289,7 @@ const MessageArea = () => {
               className='p-2 text-gray-400 hover:text-blue-400 transition-colors rounded-full'
               aria-label='Attach image'
             >
-              <LuImagePlus className='w-5 h-5' />
+              <LuImagePlus className='w-5 h-5 cursor-pointer' />
             </button>
             
             <input
@@ -305,7 +305,7 @@ const MessageArea = () => {
                 type='button'
                 className='p-2 text-gray-400 hover:text-yellow-400 transition-colors rounded-full'
               >
-                <MdOutlineEmojiEmotions className='w-5 h-5' />
+                <MdOutlineEmojiEmotions className='w-5 h-5 cursor-pointer' />
               </button>
               
               <button
@@ -318,7 +318,7 @@ const MessageArea = () => {
                 }`}
               >
                 {input || frontendImage ? (
-                  <IoSend className='w-5 h-5' />
+                  <IoSend className='w-5 h-5  cursor-pointer' />
                 ) : (
                   <IoSendOutline className='w-5 h-5' />
                 )}

@@ -39,7 +39,7 @@ const OtherUser = ({user}) => {
             </div>
         </div>
         
-        <FollowButton 
+        <FollowButton className='cursor-pointer'
             tailwind='px-3 py-1.5 text-xs font-medium bg-transparent hover:bg-gray-700 border border-gray-600 rounded-md text-white transition-colors duration-200 flex-shrink-0 cursor-pointer'
             targetUserId={user._id}
         >

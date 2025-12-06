@@ -166,7 +166,7 @@ const NotificationCard = ({ noti, onMarkAsRead, onDelete }) => {
                             }}
                             title='More options'
                         >
-                            <FiMoreVertical className='w-4 h-4 text-gray-400' />
+                            <FiMoreVertical className='w-4 h-4 text-gray-400 cursor-pointer' />
                         </button>
                         
                         {/* Dropdown menu */}
@@ -192,7 +192,7 @@ const NotificationCard = ({ noti, onMarkAsRead, onDelete }) => {
                                     </button>
                                 )}
                                 <button
-                                    className='w-full text-left px-4 py-2 text-sm text-red-400 hover:bg-gray-700 flex items-center gap-2'
+                                    className='w-full text-left px-4 py-2 text-sm text-red-400 hover:bg-gray-700 flex items-center gap-2 cursor-pointer'
                                     onClick={(e) => {
                                         e.stopPropagation();
                                         setShowDeleteConfirm(true);

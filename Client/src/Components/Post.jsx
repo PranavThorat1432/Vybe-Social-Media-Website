@@ -278,7 +278,7 @@ const Post = ({ post }) => {
                     onClick={() => setShowOptions(!showOptions)}
                     className='p-1.5 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors'
                 >
-                    <BsThreeDots className='w-5 h-5 text-gray-600 dark:text-gray-300' />
+                    <BsThreeDots className='w-5 h-5 text-gray-600 dark:text-gray-300 cursor-pointer' />
                 </button>
                 
                 {showOptions && (
@@ -288,7 +288,7 @@ const Post = ({ post }) => {
                                 <button 
                                     onClick={handleDeletePost}
                                     disabled={isDeleting}
-                                    className={`w-full text-left px-4 py-2 text-sm ${isDeleting ? 'text-gray-500' : 'text-red-500 hover:bg-gray-100 dark:hover:bg-gray-700'} flex items-center gap-2`}
+                                    className={`w-full text-left px-4 py-2 text-sm ${isDeleting ? 'text-gray-500' : 'text-red-500 hover:bg-gray-100 dark:hover:bg-gray-700'} flex items-center gap-2 cursor-pointer`}
                                 >
                                     {isDeleting ? (
                                         <span className='flex items-center gap-2'>
@@ -300,18 +300,18 @@ const Post = ({ post }) => {
                                         </span>
                                     ) : 'Delete Post'}
                                 </button>
-                                <button className='w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700'>
+                                <button className='w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer'>
                                     Edit Post
                                 </button>
                             </>
                         ) : (
-                            <button className='w-full text-left px-4 py-2 text-sm text-red-500 hover:bg-gray-100 dark:hover:bg-gray-700'>
+                            <button className='w-full text-left px-4 py-2 text-sm text-red-500 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer'>
                                 Report Post
                             </button>
                         )}
                         <button 
                             onClick={() => navigator.clipboard.writeText(`${window.location.origin}/post/${post._id}`)}
-                            className='w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700'
+                            className='w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer'
                         >
                             Copy Link
                         </button>
@@ -363,7 +363,7 @@ const Post = ({ post }) => {
                 <div className='flex space-x-4'>
                     <button 
                         onClick={handleLike}
-                        className='p-1.5 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors'
+                        className='p-1.5 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors cursor-pointer'
                     >
                         {isLiked ? (
                             <GoHeartFill className='w-6 h-6 text-red-500' />
@@ -379,14 +379,14 @@ const Post = ({ post }) => {
                                 setTimeout(() => commentInputRef.current.focus(), 100);
                             }
                         }}
-                        className='p-1.5 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors'
+                        className='p-1.5 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors cursor-pointer'
                     >
                         <MdOutlineComment className='w-6 h-6 text-gray-700 dark:text-gray-300' />
                     </button>
                     
                     <button 
                         onClick={handleShare}
-                        className='p-1.5 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors'
+                        className='p-1.5 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors cursor-pointer'
                     >
                         <MdOutlineShare className='w-6 h-6 text-gray-700 dark:text-gray-300' />
                     </button>
@@ -394,7 +394,7 @@ const Post = ({ post }) => {
                 
                 <button 
                     onClick={handleSaved}
-                    className='p-1.5 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors'
+                    className='p-1.5 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors cursor-pointer'
                 >
                     {isBookmarked ? (
                         <MdOutlineBookmark className='w-6 h-6 text-gray-900 dark:text-yellow-400' />
@@ -460,7 +460,7 @@ const Post = ({ post }) => {
                                     className='flex items-start space-x-3 group'
                                 >
                                     <div 
-                                        className='flex-shrink-0 w-8 h-8 rounded-full overflow-hidden cursor-pointer border-2 border-pink-500'
+                                        className='shrink-0 w-8 h-8 rounded-full overflow-hidden cursor-pointer border-2 border-pink-500'
                                         onClick={() => navigate(`/profile/${comment?.author?.userName}`)}
                                     >
                                         <img 
@@ -483,7 +483,7 @@ const Post = ({ post }) => {
                                                 >
                                                     {comment?.author?.userName}
                                                 </span>
-                                                <span className='text-sm text-gray-900 dark:text-gray-100 break-words'>
+                                                <span className='text-sm text-gray-900 dark:text-gray-100 wrap-break-words'>
                                                     {comment?.message}
                                                 </span>
                                             </div>
@@ -541,7 +541,7 @@ const Post = ({ post }) => {
                                 disabled={!msg.trim()}
                                 className={`px-3 py-1.5 text-sm font-medium rounded-full ${
                                     msg.trim() 
-                                        ? 'bg-pink-500 text-white hover:bg-pink-600' 
+                                        ? 'bg-pink-500 text-white hover:bg-pink-600 cursor-pointer' 
                                         : 'bg-gray-200 dark:bg-gray-600 text-gray-400 cursor-not-allowed'
                                 } transition-colors`}
                             >
