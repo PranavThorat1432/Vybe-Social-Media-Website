@@ -283,7 +283,7 @@ See the [LICENSE](/LICENSE) file for details.
 
 | Platform              | Link                                                          |
 | --------------------- | ------------------------------------------------------------- |
-| 🌐 **Live Demo**      | [View Now]()                        |
+| 🌐 **Live Demo**      | [View Now](https://vybe-social-media-website-ci0c.onrender.com)                        |
 | 🧑‍💻 **GitHub Repo** | [View Code](https://github.com/PranavThorat1432/LinkedIn-Full-Stack-Clone-using-MERN-) |
 | 💼 **LinkedIn**       | [Connect with Me](https://www.linkedin.com/in/curiouspranavthorat/)       |
 | 📩 **Email**          | [pranavthorat95@gmail.com](mailto:pranavthorat95@gmail.com)   |
