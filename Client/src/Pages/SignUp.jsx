@@ -50,11 +50,11 @@ const SignUp = () => {
     };
 
   return (
-    <div className='w-full min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 flex flex-col justify-center items-center p-4'>
+    <div className='w-full min-h-screen bg-linear-to-br from-gray-900 to-gray-800 flex flex-col justify-center items-center p-4'>
       <div className='w-full max-w-5xl bg-gray-800 rounded-2xl overflow-hidden shadow-2xl border border-gray-700'>
         <div className='flex flex-col lg:flex-row h-full'>
           {/* Left Side - Branding */}
-          <div className='lg:w-1/2 bg-gradient-to-br from-gray-900 to-gray-800 p-8 flex flex-col justify-center items-center text-center text-white'>
+          <div className='lg:w-1/2 bg-linear-to-br from-gray-900 to-gray-800 p-8 flex flex-col justify-center items-center text-center text-white'>
             <img src={logo1} alt="Vybe Logo" className='w-40 mb-6'/>
             <h1 className='text-3xl font-bold mb-4'>Join Vybe Today</h1>
             <p className='text-gray-300 mb-8'>Not Just A Platform, It's a VYBE</p>

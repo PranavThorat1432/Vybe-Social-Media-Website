@@ -29,7 +29,7 @@ const Messages = () => {
             </div>
 
             {/* Search Bar */}
-            <div className='p-3 border-b border-gray-800 bg-gray-900/95 backdrop-blur-sm sticky top-0 z-10 flex-shrink-0'>
+            <div className='p-3 border-b border-gray-800 bg-gray-900/95 backdrop-blur-sm sticky top-0 z-10 shrink-0'>
                 <div className='relative'>
                     <div className='absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none'>
                         <FaSearch className='text-gray-400 w-4 h-4' />
@@ -43,12 +43,12 @@ const Messages = () => {
             </div>
 
             {/* Online Users */}
-            <div className='w-full py-3 px-4 flex gap-4 items-center overflow-x-auto no-scrollbar border-b border-gray-800 bg-gray-900/90 backdrop-blur-sm flex-shrink-0'>
+            <div className='w-full py-3 px-4 flex gap-4 items-center overflow-x-auto no-scrollbar border-b border-gray-800 bg-gray-900/90 backdrop-blur-sm shrink-0'>
                 {userData?.following?.map((user, index) => (
                     (onlineUsers && onlineUsers.includes(user._id?.toString())) && (
                         <div 
                             key={user._id || index} 
-                            className='flex flex-col items-center flex-shrink-0'
+                            className='flex flex-col items-center shrink-0'
                             onClick={() => {
                                 dispatch(setSelectedUser(user));
                                 navigate('/messageArea');
@@ -73,7 +73,7 @@ const Messages = () => {
                                 navigate('/messageArea');
                             }}
                         >
-                            <div className='relative flex-shrink-0'>
+                            <div className='relative shrink-0'>
                                 <div className='w-12 h-12 rounded-full overflow-hidden'>
                                     <img 
                                         src={user.profileImage || profilePic} 

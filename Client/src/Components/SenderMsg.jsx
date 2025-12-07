@@ -48,10 +48,10 @@ const SenderMsg = ({ message, isLastMessage }) => {
             {message.message && (
               <div 
                 className={`inline-block px-4 py-2.5 rounded-2xl rounded-br-sm ${
-                  message.image ? 'rounded-tl-none bg-gray-800/80 backdrop-blur-sm' : 'bg-gradient-to-br from-blue-500 to-indigo-600'
+                  message.image ? 'rounded-tl-none bg-gray-800/80 backdrop-blur-sm' : 'bg-linear-to-br from-blue-500 to-indigo-600'
                 } shadow-lg`}
               >
-                <div className="text-white text-[15px] leading-relaxed break-words whitespace-pre-wrap">
+                <div className="text-white text-[15px] leading-relaxed wrap-break-words whitespace-pre-wrap">
                   {message.message}
                 </div>
               </div>
@@ -74,7 +74,7 @@ const SenderMsg = ({ message, isLastMessage }) => {
           </div>
         </div>
         
-        <div className="w-8 h-8 rounded-full overflow-hidden flex-shrink-0 border-2 border-gray-700 group-hover:border-blue-400 transition-colors">
+        <div className="w-8 h-8 rounded-full overflow-hidden shrink-0 border-2 border-gray-700 group-hover:border-blue-400 transition-colors">
           <img 
             src={userData.profileImage} 
             alt={userData.userName}

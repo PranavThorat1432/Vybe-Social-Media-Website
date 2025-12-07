@@ -133,7 +133,7 @@ const Navbar = () => {
                                         className="absolute -top-10 bg-black/80 text-white text-xs px-2 py-1 rounded-md whitespace-nowrap"
                                     >
                                         {item.label}
-                                        <div className="absolute bottom-[-4px] left-1/2 transform -translate-x-1/2 w-2 h-2 bg-black/80 rotate-45" />
+                                        <div className="absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-2 h-2 bg-black/80 rotate-45" />
                                     </motion.div>
                                 )}
                             </AnimatePresence>

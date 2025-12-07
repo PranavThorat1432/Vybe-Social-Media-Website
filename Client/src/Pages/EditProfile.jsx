@@ -68,7 +68,7 @@ const EditProfile = () => {
   });
 
   return (
-    <div className='w-full min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 flex flex-col items-center p-4 md:p-8'>
+    <div className='w-full min-h-screen bg-linear-to-br from-gray-900 to-gray-800 flex flex-col items-center p-4 md:p-8'>
       <div className='w-full max-w-4xl bg-gray-800 rounded-2xl overflow-hidden shadow-2xl border border-gray-700 mt-8'>
         {/* Header */}
         <div className='p-4 border-b border-gray-700 flex items-center'>

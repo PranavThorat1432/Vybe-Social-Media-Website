@@ -27,7 +27,7 @@ const ReceiverMsg = ({ message, isLastMessage }) => {
       className="w-full flex justify-start mb-4 last:mb-2 px-2 group"
     >
       <div className="flex items-end gap-2 max-w-[85%] sm:max-w-[75%] md:max-w-[65%] lg:max-w-[55%]">
-        <div className="w-8 h-8 rounded-full overflow-hidden flex-shrink-0 border-2 border-gray-700 group-hover:border-blue-400 transition-colors">
+        <div className="w-8 h-8 rounded-full overflow-hidden shrink-0 border-2 border-gray-700 group-hover:border-blue-400 transition-colors">
           <img 
             src={selectedUser.profileImage} 
             alt={selectedUser.userName}
@@ -58,7 +58,7 @@ const ReceiverMsg = ({ message, isLastMessage }) => {
                   message.image ? 'rounded-tr-none bg-gray-800/80 backdrop-blur-sm' : 'bg-gray-800/90'
                 } shadow-lg`}
               >
-                <div className="text-white text-[15px] leading-relaxed break-words whitespace-pre-wrap">
+                <div className="text-white text-[15px] leading-relaxed wrap-break-words whitespace-pre-wrap">
                   {message.message}
                 </div>
               </div>
